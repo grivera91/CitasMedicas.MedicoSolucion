@@ -25,7 +25,7 @@ builder.Services.AddCors(options =>
                    .AllowAnyHeader();
         });
 });
-
+/*
 // Configurar Autenticación con JWT
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -41,7 +41,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])) // Configurar la clave de firma en appsettings.json
         };
     });
-
+*/
 builder.Services.AddScoped<CorrelativoService>();
 
 // Add services to the container.
@@ -64,7 +64,7 @@ app.UseHttpsRedirection();
 
 app.UseCors("AllowAllOrigins");
 
-app.UseAuthentication();
+//app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

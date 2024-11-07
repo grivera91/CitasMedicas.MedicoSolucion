@@ -22,7 +22,7 @@ namespace CitasMedicas.MedicoApi.Controllers
             _correlativoService = correlativoService;
         }
 
-        [Authorize]
+        //[Authorize]
         [HttpPost]
         public async Task<IActionResult> RegistrarMedico([FromBody] MedicoRequestDto medicoRequestDto)
         {
@@ -106,7 +106,7 @@ namespace CitasMedicas.MedicoApi.Controllers
             }
         }
 
-        [Authorize]
+        //[Authorize]
         [HttpPatch("{id}")]
         public async Task<IActionResult> EditarMedico(int id, [FromBody] MedicoRequestDto medicoRequest)
         {
@@ -174,7 +174,7 @@ namespace CitasMedicas.MedicoApi.Controllers
         }
 
 
-        [Authorize]
+        //[Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<MedicoResponseDto>> ObtenerMedico(int id)
         {
@@ -206,7 +206,7 @@ namespace CitasMedicas.MedicoApi.Controllers
             return Ok(medico);
         }
 
-        [Authorize]
+        //[Authorize]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<MedicoResponseDto>>> ObtenerMedicos()
         {
