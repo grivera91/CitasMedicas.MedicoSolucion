@@ -1,0 +1,6 @@
+@CitasMedicas.MedicoApi_HostAddress = http://localhost:5055
+
+GET {{CitasMedicas.MedicoApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

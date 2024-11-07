@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34728.123
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CitasMedicas.MedicoApi", "CitasMedicas.MedicoApi\CitasMedicas.MedicoApi.csproj", "{FA31C95B-4970-4DD0-8F9B-034E2811FCDB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FA31C95B-4970-4DD0-8F9B-034E2811FCDB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA31C95B-4970-4DD0-8F9B-034E2811FCDB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA31C95B-4970-4DD0-8F9B-034E2811FCDB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA31C95B-4970-4DD0-8F9B-034E2811FCDB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9EE40C64-53F1-4E3F-BB33-72F9FB6E257E}
+	EndGlobalSection
+EndGlobal
