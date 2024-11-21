@@ -41,8 +41,9 @@ namespace CitasMedicas.MedicoApi.Controllers
                 {
                     IdUsuario = medicoRequestDto.IdUsuario,
                     CodigoMedico = codigoMedico,
-                    Especialidad = medicoRequestDto.Especialidad,
+                    IdEspecialidad = medicoRequestDto.IdEspecialidad,
                     NumeroColegiatura = medicoRequestDto.NumeroColegiatura,
+                    Observaciones = medicoRequestDto.Observaciones,
                     UsuarioCreacion = medicoRequestDto.UsuarioCreacion,
                     FechaCreacion = DateTime.Now
                 };
@@ -51,50 +52,18 @@ namespace CitasMedicas.MedicoApi.Controllers
                 _context.Medicos.Add(medico);
                 await _context.SaveChangesAsync();
 
+                // Confirmar la transacción
+                await transaction.CommitAsync();
+
                 MedicoResponseDto medicoResponseDto = new MedicoResponseDto
                 {
                     IdMedico = medico.IdMedico,
                     IdUsuario = medico.IdUsuario,
                     CodigoMedico = medico.CodigoMedico,
-                    Especialidad = medico.Especialidad,
-                    NumeroColegiatura = medico.NumeroColegiatura,
-                    HorariosAtencion = new List<HorarioAtencionResponseDto>()
-                };
-
-                // Guardar cada horario asociado al médico
-                if (medicoRequestDto.HorariosAtencion != null && medicoRequestDto.HorariosAtencion.Any())
-                {
-                    List<HorarioAtencion> horariosAtencion = new List<HorarioAtencion>();
-
-                    foreach (HorarioAtencionRequestDto horarioAtencionRequestDto in medicoRequestDto.HorariosAtencion)
-                    {
-                        HorarioAtencion horarioAtencion = new HorarioAtencion
-                        {
-                            IdMedico = medico.IdMedico,
-                            DiaSemana = horarioAtencionRequestDto.DiaSemana,
-                            HoraInicio = horarioAtencionRequestDto.HoraInicio,
-                            HoraFin = horarioAtencionRequestDto.HoraFin,
-                            UsuarioCreacion = medico.UsuarioCreacion,
-                            FechaCreacion = DateTime.Now,
-                        };
-
-                        horariosAtencion.Add(horarioAtencion);
-                        medicoResponseDto.HorariosAtencion.Add(new HorarioAtencionResponseDto
-                        {
-                            IdHorario = horarioAtencion.IdHorario,
-                            IdMedico = horarioAtencion.IdMedico,
-                            DiaSemana = horarioAtencion.DiaSemana,
-                            HoraInicio = horarioAtencion.HoraInicio,
-                            HoraFin = horarioAtencion.HoraFin
-                        });
-                    }
-
-                    _context.HorariosAtencion.AddRange(horariosAtencion);
-                    await _context.SaveChangesAsync();
-                }
-
-                // Confirmar la transacción
-                await transaction.CommitAsync();                
+                    IdEspecialidad = medico.IdEspecialidad,
+                    NumeroColegiatura = medico.NumeroColegiatura,                    
+                    Observaciones = medico.Observaciones,                    
+                };                          
 
                 return Ok(medicoResponseDto);
             }
@@ -114,7 +83,7 @@ namespace CitasMedicas.MedicoApi.Controllers
 
             try
             {
-                Medico? medico = await _context.Medicos.Include(m => m.HorariosAtencion).FirstOrDefaultAsync(m => m.IdMedico == id);
+                Medico? medico = await _context.Medicos.FirstOrDefaultAsync(m => m.IdMedico == id);
 
                 if (medico == null)
                 {
@@ -122,41 +91,23 @@ namespace CitasMedicas.MedicoApi.Controllers
                 }
 
                 // Actualizar los campos del médico solo si se proporcionan en MedicoRequestDto
-                if (!string.IsNullOrEmpty(medicoRequest.Especialidad))
+                if (!(medicoRequest.IdEspecialidad).Equals(0))
                 {
-                    medico.Especialidad = medicoRequest.Especialidad;
+                    medico.IdEspecialidad = medicoRequest.IdEspecialidad;
                 }
 
-                if (!string.IsNullOrEmpty(medicoRequest.NumeroColegiatura))
+                if (!(medicoRequest.NumeroColegiatura).Equals(0))
                 {
                     medico.NumeroColegiatura = medicoRequest.NumeroColegiatura;
                 }
 
-                medico.UsuarioModificacion = medicoRequest.UsuarioModificacion;
-                medico.FechaModificacion = DateTime.Now;
-
-                // Actualizar los horarios de atención
-                if (medicoRequest.HorariosAtencion != null && medicoRequest.HorariosAtencion.Any())
+                if (!string.IsNullOrEmpty(medicoRequest.Observaciones))
                 {
-                    // Eliminar los horarios existentes
-                    _context.HorariosAtencion.RemoveRange(medico.HorariosAtencion);
-
-                    // Agregar los nuevos horarios
-                    foreach (var horarioDto in medicoRequest.HorariosAtencion)
-                    {
-                        HorarioAtencion? nuevoHorario = new HorarioAtencion
-                        {
-                            IdMedico = medico.IdMedico,
-                            DiaSemana = horarioDto.DiaSemana,
-                            HoraInicio = horarioDto.HoraInicio,
-                            HoraFin = horarioDto.HoraFin,
-                            UsuarioCreacion = horarioDto.UsuarioCreacion,
-                            FechaCreacion = DateTime.Now,                            
-                        };
-
-                        medico.HorariosAtencion.Add(nuevoHorario);
-                    }
+                    medico.Observaciones = medicoRequest.Observaciones;
                 }
+
+                medico.UsuarioModificacion = medicoRequest.UsuarioModificacion;
+                medico.FechaModificacion = DateTime.Now;                               
 
                 // Guardar los cambios en la base de datos
                 _context.Medicos.Update(medico);
@@ -185,16 +136,9 @@ namespace CitasMedicas.MedicoApi.Controllers
                     IdMedico = m.IdMedico,
                     IdUsuario = m.IdUsuario,
                     CodigoMedico = m.CodigoMedico,
-                    Especialidad = m.Especialidad,
+                    IdEspecialidad = m.IdEspecialidad,
                     NumeroColegiatura = m.NumeroColegiatura,
-                    HorariosAtencion = m.HorariosAtencion.Select(h => new HorarioAtencionResponseDto
-                    {
-                        IdHorario = h.IdHorario,
-                        IdMedico = h.IdMedico,
-                        DiaSemana = h.DiaSemana,
-                        HoraInicio = h.HoraInicio,
-                        HoraFin = h.HoraFin                        
-                    }).ToList()
+                    Observaciones = m.Observaciones
                 })
                 .FirstOrDefaultAsync();
 
@@ -216,8 +160,9 @@ namespace CitasMedicas.MedicoApi.Controllers
                     IdMedico = m.IdMedico,
                     IdUsuario = m.IdUsuario,
                     CodigoMedico = m.CodigoMedico,
-                    Especialidad = m.Especialidad,
-                    NumeroColegiatura = m.NumeroColegiatura                    
+                    EspecialidadId = m.IdEspecialidad,
+                    NumeroColegiatura = m.NumeroColegiatura,
+                    Observaciones = m.Observaciones
                 })
                 .ToListAsync();
 
